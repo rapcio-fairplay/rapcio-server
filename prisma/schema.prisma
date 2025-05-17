@@ -1,0 +1,54 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:../dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Seeding configuration
+generator seed {
+  provider = "prisma-seed"
+  output   = "./seed.ts"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  fullName  String
+  email     String   @unique
+  password  String
+  role      String   // "SUPER_ADMIN" | "ADMIN" | "REFEREE"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Player {
+  id                    String   @id @default(uuid())
+  familyName           String
+  firstName            String
+  languageOfTheName    String?
+  dateOfBirth          String
+  gender               String
+  countryOfBirth       String
+  mainNationality      String
+  secondaryNationality String?
+  regionOrStateOfBirth String?
+  cityOfBirth         String
+  identificationNumber String   @unique
+  status              String   // "ACTIVE" | "INACTIVE"
+  clubId              String?
+  club                Club?    @relation(fields: [clubId], references: [id])
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
+model Club {
+  id          String   @id @default(uuid())
+  clubName    String   @unique
+  email       String   @unique
+  description String?
+  players     Player[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
